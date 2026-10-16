@@ -1,4 +1,5 @@
 // Usman Kalera portfolio backend — contact-form API + message dashboard
+// Storage: Postgres (Neon) when DATABASE_URL is set, JSON files as fallback.
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -9,6 +10,85 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'change-me-in-production';
 const DATA_FILE = path.join(__dirname, 'messages.json');
 const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
+const VISITS_FILE = path.join(__dirname, 'visits.json');
+
+const useDb = !!process.env.DATABASE_URL;
+let pool = null;
+
+async function initDb() {
+  if (!useDb) return;
+  const { Pool } = require('pg');
+  pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+  await pool.query(`CREATE TABLE IF NOT EXISTS messages (
+    id TEXT PRIMARY KEY, name TEXT, email TEXT, subject TEXT, message TEXT,
+    ip TEXT, created_at TIMESTAMPTZ, read BOOLEAN DEFAULT FALSE)`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS reviews (
+    id TEXT PRIMARY KEY, name TEXT, rating INT, comment TEXT, created_at TIMESTAMPTZ)`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS visits (id INT PRIMARY KEY, count BIGINT)`);
+  await pool.query(`INSERT INTO visits (id, count) VALUES (1, 0) ON CONFLICT (id) DO NOTHING`);
+  console.log('Postgres storage ready');
+}
+
+// ---------- storage layer (DB primary, JSON fallback) ----------
+async function loadMessages() {
+  if (useDb) {
+    const r = await pool.query('SELECT id,name,email,subject,message,created_at AS "createdAt",read FROM messages ORDER BY created_at DESC');
+    return r.rows;
+  }
+  try { return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')); } catch { return []; }
+}
+async function saveMessage(m) {
+  if (useDb) {
+    await pool.query('INSERT INTO messages (id,name,email,subject,message,ip,created_at,read) VALUES ($1,$2,$3,$4,$5,$6,$7,FALSE)',
+      [m.id, m.name, m.email, m.subject, m.message, m.ip, m.createdAt]);
+    return;
+  }
+  const msgs = await loadMessages(); msgs.unshift(m);
+  fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2));
+}
+async function markRead(id) {
+  if (useDb) { await pool.query('UPDATE messages SET read=TRUE WHERE id=$1', [id]); return; }
+  const msgs = await loadMessages();
+  const m = msgs.find(x => x.id === id);
+  if (m) { m.read = true; fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2)); }
+  return !!m;
+}
+async function loadReviews() {
+  if (useDb) {
+    const r = await pool.query('SELECT id,name,rating,comment,created_at AS "createdAt" FROM reviews ORDER BY created_at DESC');
+    return r.rows;
+  }
+  try { return JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8')); } catch { return []; }
+}
+async function saveReview(rv) {
+  if (useDb) {
+    await pool.query('INSERT INTO reviews (id,name,rating,comment,created_at) VALUES ($1,$2,$3,$4,$5)',
+      [rv.id, rv.name, rv.rating, rv.comment, rv.createdAt]);
+    return;
+  }
+  const revs = await loadReviews(); revs.unshift(rv);
+  fs.writeFileSync(REVIEWS_FILE, JSON.stringify(revs, null, 2));
+}
+async function deleteReview(id) {
+  if (useDb) { await pool.query('DELETE FROM reviews WHERE id=$1', [id]); return; }
+  fs.writeFileSync(REVIEWS_FILE, JSON.stringify((await loadReviews()).filter(r => r.id !== id), null, 2));
+}
+async function getVisits() {
+  if (useDb) {
+    const r = await pool.query('SELECT count FROM visits WHERE id=1');
+    return Number(r.rows[0].count);
+  }
+  try { return JSON.parse(fs.readFileSync(VISITS_FILE, 'utf8')).count || 0; } catch { return 0; }
+}
+async function bumpVisits() {
+  if (useDb) {
+    const r = await pool.query('UPDATE visits SET count = count + 1 WHERE id=1 RETURNING count');
+    return Number(r.rows[0].count);
+  }
+  const count = await getVisits() + 1;
+  fs.writeFileSync(VISITS_FILE, JSON.stringify({ count }));
+  return count;
+}
 
 app.use(express.json({ limit: '32kb' }));
 
@@ -21,7 +101,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simple in-memory rate limit: 5 messages / 10 min per IP
+// Simple in-memory rate limit: 5 submissions / 10 min per IP
 const hits = new Map();
 function rateLimited(ip) {
   const now = Date.now();
@@ -31,25 +111,11 @@ function rateLimited(ip) {
   return arr.length > 5;
 }
 
-function loadMessages() {
-  try { return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')); }
-  catch { return []; }
-}
-function saveMessages(msgs) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2));
-}
-function loadReviews() {
-  try { return JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8')); }
-  catch { return []; }
-}
-function saveReviews(revs) {
-  fs.writeFileSync(REVIEWS_FILE, JSON.stringify(revs, null, 2));
-}
-
-app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+app.get('/api/health', async (req, res) =>
+  res.json({ ok: true, storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() }));
 
 // Contact form submission
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages — please try again later.' });
 
@@ -64,36 +130,22 @@ app.post('/api/contact', (req, res) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     return res.status(400).json({ error: 'Please enter a valid email address.' });
 
-  const msgs = loadMessages();
-  msgs.unshift({
-    id: crypto.randomUUID(),
-    name, email, subject, message,
-    ip: String(ip).slice(0, 45),
-    createdAt: new Date().toISOString(),
-    read: false
+  await saveMessage({
+    id: crypto.randomUUID(), name, email, subject, message,
+    ip: String(ip).slice(0, 45), createdAt: new Date().toISOString(), read: false
   });
-  saveMessages(msgs);
   res.json({ ok: true });
 });
 
 // Reviews — public list
-app.get('/api/reviews', (req, res) => res.json(loadReviews()));
+app.get('/api/reviews', async (req, res) => res.json(await loadReviews()));
 
 // Visitor counter
-const VISITS_FILE = path.join(__dirname, 'visits.json');
-function getVisits() {
-  try { return JSON.parse(fs.readFileSync(VISITS_FILE, 'utf8')).count || 0; }
-  catch { return 0; }
-}
-app.get('/api/visits', (req, res) => res.json({ count: getVisits() }));
-app.post('/api/visits', (req, res) => {
-  const count = getVisits() + 1;
-  fs.writeFileSync(VISITS_FILE, JSON.stringify({ count }));
-  res.json({ count });
-});
+app.get('/api/visits', async (req, res) => res.json({ count: await getVisits() }));
+app.post('/api/visits', async (req, res) => res.json({ count: await bumpVisits() }));
 
 // Reviews — submit (rate-limited)
-app.post('/api/reviews', (req, res) => {
+app.post('/api/reviews', async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many submissions — please try again later.' });
 
@@ -106,36 +158,31 @@ app.post('/api/reviews', (req, res) => {
   if (!Number.isInteger(rating) || rating < 1 || rating > 5)
     return res.status(400).json({ error: 'Rating must be 1–5 stars.' });
 
-  const revs = loadReviews();
-  revs.unshift({ id: crypto.randomUUID(), name, rating, comment, createdAt: new Date().toISOString() });
-  saveReviews(revs);
+  await saveReview({ id: crypto.randomUUID(), name, rating, comment, createdAt: new Date().toISOString() });
   res.json({ ok: true });
 });
 
 // Reviews — admin delete
-app.delete('/api/reviews/:id', (req, res) => {
+app.delete('/api/reviews/:id', async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
-  saveReviews(loadReviews().filter(r => r.id !== req.params.id));
+  await deleteReview(req.params.id);
   res.json({ ok: true });
 });
 
 // Admin: list messages (Bearer token)
-app.get('/api/messages', (req, res) => {
+app.get('/api/messages', async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
-  res.json(loadMessages());
+  res.json(await loadMessages());
 });
 
 // Admin: mark read
-app.post('/api/messages/:id/read', (req, res) => {
+app.post('/api/messages/:id/read', async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
-  const msgs = loadMessages();
-  const m = msgs.find(x => x.id === req.params.id);
-  if (!m) return res.status(404).json({ error: 'Not found' });
-  m.read = true;
-  saveMessages(msgs);
+  const ok = await markRead(req.params.id);
+  if (!ok) return res.status(404).json({ error: 'Not found' });
   res.json({ ok: true });
 });
 
@@ -163,4 +210,9 @@ async function delRev(id){await fetch('/api/reviews/'+id,{method:'DELETE',header
 </body></html>`);
 });
 
-app.listen(PORT, () => console.log('Portfolio API listening on port ' + PORT));
+initDb().then(() => {
+  app.listen(PORT, () => console.log('Portfolio API listening on port ' + PORT + ' (storage: ' + (useDb ? 'postgres' : 'json') + ')'));
+}).catch(err => {
+  console.error('DB init failed, exiting:', err.message);
+  process.exit(1);
+});
