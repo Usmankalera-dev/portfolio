@@ -79,6 +79,19 @@ app.post('/api/contact', (req, res) => {
 // Reviews — public list
 app.get('/api/reviews', (req, res) => res.json(loadReviews()));
 
+// Visitor counter
+const VISITS_FILE = path.join(__dirname, 'visits.json');
+function getVisits() {
+  try { return JSON.parse(fs.readFileSync(VISITS_FILE, 'utf8')).count || 0; }
+  catch { return 0; }
+}
+app.get('/api/visits', (req, res) => res.json({ count: getVisits() }));
+app.post('/api/visits', (req, res) => {
+  const count = getVisits() + 1;
+  fs.writeFileSync(VISITS_FILE, JSON.stringify({ count }));
+  res.json({ count });
+});
+
 // Reviews — submit (rate-limited)
 app.post('/api/reviews', (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
