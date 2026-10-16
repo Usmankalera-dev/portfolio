@@ -2,7 +2,45 @@
 // Leave empty to run frontend-only (contact form will show a notice).
 const BACKEND_URL = "https://portfolio-nu8s.onrender.com"; // e.g. "https://usman-portfolio-api.onrender.com"
 
-// Count-up animation for hero stats
+// ---------- Urdu / English toggle ----------
+const I18N = {
+en: {nav_about:"About",nav_skills:"Skills",nav_exp:"Experience",nav_projects:"Projects",nav_videos:"Videos",nav_research:"Research",nav_reviews:"Reviews",nav_hire:"Hire Me",
+kicker:"AI ENGINEER & CREATOR",tagline:"BS Artificial Intelligence · Generative AI Practitioner · Published Researcher",
+stat_papers:"Research Papers",stat_dois:"DOIs",stat_certs:"Certifications",stat_repos:"GitHub Repos",
+cta_touch:"Get In Touch",cta_research:"View Research",cta_cv:"Download CV",
+h_about:"About",about_lead:"BS Artificial Intelligence student at Superior University Lahore (CGPA 3.3) with 1.5 years of hands-on generative AI practice: AI video advertisement production, prompt engineering, and Urdu/English text-to-speech voiceover pipelines. Published 4 research papers with 8 DOIs (Zenodo & Figshare), archived on the Internet Archive, with reproducible code on GitHub. Shipped a WordPress business website for a Lahore client and produced AI video ads used as commercial portfolio pieces. Marketing Lead (SE), IEEE Computer Society.",
+info_phone:"Phone",info_loc:"Location",info_edu:"Education",
+h_skills:"Technical Skills",sk1t:"AI Expertise",sk2t:"Development",sk3t:"Content & Design",
+h_exp:"Experience",ex1t:"Generative AI Practitioner",ex1d:"Produced AI video advertisements with consistent character rendering and Urdu/English voiceovers. Built and delivered Digital Growth Hub, a 7-page WordPress business website for a Lahore client. Created a multi-part Lahore vlog series with English narration and Urdu subtitles.",
+h_projects:"Featured Projects",h_videos:"Video Showcase",videos_lead:"AI-generated video advertisements and portfolio showreels — produced end-to-end with generative AI pipelines.",
+h_pubs:"Publications",h_edu:"Education & Certifications",
+h_reviews:"Reviews",reviews_lead:"What clients and collaborators say about working with me.",review_form:"Leave a review",btn_review:"Submit Review",
+h_contact:"Get In Touch",contact_lead:"Have a project, a role, or a research collaboration in mind? Send a message — it lands straight in my inbox dashboard.",btn_send:"Send Message",
+ph_name:"Your name",ph_email:"Your email",ph_subject:"Subject",ph_review:"Your review...",ph_message:"Your message..."},
+ur: {nav_about:"میرے بارے میں",nav_skills:"مہارتیں",nav_exp:"تجربہ",nav_projects:"پراجیکٹس",nav_videos:"ویڈیوز",nav_research:"تحقیق",nav_reviews:"تبصرے",nav_hire:"رابطہ کریں",
+kicker:"اے آئی انجینئر اور کریئیٹر",tagline:"بی ایس آرٹیفیشل انٹیلیجنس · جنریٹو اے آئی پریکٹیشنر · شائع شدہ محقق",
+stat_papers:"تحقیقی مقالات",stat_dois:"ڈی او آئی",stat_certs:"سرٹیفیکیشنز",stat_repos:"گٹ ہب ریپوز",
+cta_touch:"رابطہ کریں",cta_research:"تحقیق دیکھیں",cta_cv:"سی وی ڈاؤن لوڈ کریں",
+h_about:"میرے بارے میں",about_lead:"سپیریئر یونیورسٹی لاہور میں بی ایس آرٹیفیشل انٹیلیجنس کا طالب علم (سی جی پی اے 3.3) — ڈیڑھ سال کا جنریٹو اے آئی کا عملی تجربہ: اے آئی ویڈیو اشتہارات، پرامپٹ انجینئرنگ، اور اردو/انگریزی ٹیکسٹ ٹو اسپیچ پائپ لائنز۔ 4 تحقیقی مقالات 8 ڈی او آئی کے ساتھ شائع (زینوڈو اور فگ شیئر)، انٹرنیٹ آرکائیو پر محفوظ، اور گٹ ہب پر قابلِ تکرار کوڈ۔ لاہور کے کلائنٹ کے لیے 7 صفحات کی ورڈپریس ویب سائٹ بنائی اور کمرشل پورٹ فولیو کے لیے اے آئی ویڈیو اشتہارات تیار کیے۔ مارکیٹنگ لیڈ (ایس ای)، آئی ٹرپل ای کمپیوٹر سوسائٹی۔",
+info_phone:"فون",info_loc:"مقام",info_edu:"تعلیم",
+h_skills:"تکنیکی مہارتیں",sk1t:"اے آئی مہارت",sk2t:"ڈیویلپمنٹ",sk3t:"کنٹینٹ اور ڈیزائن",
+h_exp:"تجربہ",ex1t:"جنریٹو اے آئی پریکٹیشنر",ex1d:"مستقل کریکٹر رینڈرنگ اور اردو/انگریزی وائس اوورز کے ساتھ اے آئی ویڈیو اشتہارات بنائے۔ لاہور کے کلائنٹ کے لیے ڈیجیٹل گروتھ ہب — 7 صفحات کی ورڈپریس بزنس ویب سائٹ بنائی اور ڈیلیور کی۔ انگریزی نیریشن اور اردو سب ٹائٹلز کے ساتھ لاہور ولاگ سیریز بنائی۔",
+h_projects:"نمایاں پراجیکٹس",h_videos:"ویڈیو شوکیس",videos_lead:"اے آئی سے تیار کردہ ویڈیو اشتہارات اور پورٹ فولیو شو ریلز — مکمل جنریٹو اے آئی پائپ لائنز سے تیار شدہ۔",
+h_pubs:"اشاعتیں",h_edu:"تعلیم اور سرٹیفیکیشنز",
+h_reviews:"تبصرے",reviews_lead:"کلائنٹس اور ساتھی میرے ساتھ کام کے بارے میں کیا کہتے ہیں۔",review_form:"اپنا تبصرہ لکھیں",btn_review:"تبصرہ بھیجیں",
+h_contact:"رابطہ کریں",contact_lead:"کوئی پراجیکٹ، نوکری، یا تحقیقی تعاون ذہن میں ہے؟ پیغام بھیجیں — یہ سیدھا میرے ان باکس میں آئے گا۔",btn_send:"پیغام بھیجیں",
+ph_name:"آپ کا نام",ph_email:"آپ کا ای میل",ph_subject:"موضوع",ph_review:"آپ کا تبصرہ...",ph_message:"آپ کا پیغام..."}};
+
+let lang = localStorage.getItem('uk-lang') || 'en';
+function applyLang(l){
+  lang = l; localStorage.setItem('uk-lang', l);
+  document.documentElement.lang = l; document.documentElement.dir = l === 'ur' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (I18N[l][k]) el.innerHTML = I18N[l][k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { const k = el.dataset.i18nPh; if (I18N[l][k]) el.placeholder = I18N[l][k]; });
+  document.getElementById('lang-toggle').textContent = l === 'ur' ? 'EN' : 'اردو';
+}
+document.getElementById('lang-toggle').addEventListener('click', () => applyLang(lang === 'ur' ? 'en' : 'ur'));
+applyLang(lang);
 document.querySelectorAll('[data-count]').forEach(el => {
   const target = +el.dataset.count;
   let cur = 0;

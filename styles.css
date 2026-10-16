@@ -86,6 +86,26 @@ a:hover{color:var(--amber2)}
 footer{text-align:center;padding:40px 5%;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
 .foot-links{margin-top:8px}
 
+/* floating WhatsApp + language toggle */
+.lang-btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.9rem}
+.lang-btn:hover{border-color:var(--amber);color:var(--amber)}
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:60;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s}
+.wa-float:hover{transform:scale(1.1)}
+
+/* video showcase */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.video-card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.video-card video{width:100%;display:block;background:#000;max-height:480px}
+.video-card h3{padding:14px 18px;font-size:1rem;color:var(--amber)}
+
+/* RTL (Urdu) tweaks */
+html[dir="rtl"] body{text-align:right}
+html[dir="rtl"] .section h2::after{left:auto;right:0}
+html[dir="rtl"] .timeline{border-left:none;border-right:2px solid var(--amber);margin-left:0;margin-right:8px;padding-left:0;padding-right:28px}
+html[dir="rtl"] .t-item::before{left:auto;right:-37px}
+html[dir="rtl"] .pub{border-left:1px solid var(--line);border-right:4px solid var(--amber)}
+html[dir="rtl"] .wa-float{right:auto;left:24px}
+
 /* reviews */
 .rating-summary{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .rating-summary b{font-size:3rem;color:var(--amber)}
