@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'change-me-in-production';
 const DATA_FILE = path.join(__dirname, 'messages.json');
+const REVIEWS_FILE = path.join(__dirname, 'reviews.json');
 
 app.use(express.json({ limit: '32kb' }));
 
@@ -36,6 +37,13 @@ function loadMessages() {
 }
 function saveMessages(msgs) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2));
+}
+function loadReviews() {
+  try { return JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8')); }
+  catch { return []; }
+}
+function saveReviews(revs) {
+  fs.writeFileSync(REVIEWS_FILE, JSON.stringify(revs, null, 2));
 }
 
 app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
@@ -68,6 +76,37 @@ app.post('/api/contact', (req, res) => {
   res.json({ ok: true });
 });
 
+// Reviews — public list
+app.get('/api/reviews', (req, res) => res.json(loadReviews()));
+
+// Reviews — submit (rate-limited)
+app.post('/api/reviews', (req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  if (rateLimited(ip)) return res.status(429).json({ error: 'Too many submissions — please try again later.' });
+
+  let { name, rating, comment } = req.body || {};
+  name = String(name || '').trim().slice(0, 80);
+  comment = String(comment || '').trim().slice(0, 500);
+  rating = parseInt(rating, 10);
+
+  if (!name || !comment) return res.status(400).json({ error: 'Name and review are required.' });
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5)
+    return res.status(400).json({ error: 'Rating must be 1–5 stars.' });
+
+  const revs = loadReviews();
+  revs.unshift({ id: crypto.randomUUID(), name, rating, comment, createdAt: new Date().toISOString() });
+  saveReviews(revs);
+  res.json({ ok: true });
+});
+
+// Reviews — admin delete
+app.delete('/api/reviews/:id', (req, res) => {
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
+  saveReviews(loadReviews().filter(r => r.id !== req.params.id));
+  res.json({ ok: true });
+});
+
 // Admin: list messages (Bearer token)
 app.get('/api/messages', (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
@@ -97,11 +136,17 @@ button{background:#f5a623;border:none;border-radius:8px;font-weight:700;cursor:p
 .msg{background:#1a1a1f;border:1px solid #2a2a30;border-radius:10px;padding:14px;margin:12px 0}
 .msg.unread{border-left:4px solid #f5a623}.meta{color:#a8a29a;font-size:.8rem}</style></head>
 <body><h2>📥 Inbox</h2>
-<input id="t" type="password" placeholder="Admin token"> <button onclick="load()">Load</button><div id="list"></div>
+<input id="t" type="password" placeholder="Admin token"> <button onclick="load()">Load</button>
+<h3>Messages</h3><div id="list"></div>
+<h3>Reviews</h3><div id="revs"></div>
 <script>async function load(){const t=document.getElementById('t').value;
 const r=await fetch('/api/messages',{headers:{Authorization:'Bearer '+t}});const d=await r.json();
 if(!Array.isArray(d)){document.getElementById('list').innerHTML='<p>Unauthorized</p>';return;}
-document.getElementById('list').innerHTML=d.map(m=>'<div class="msg'+(m.read?'':' unread')+'"><b>'+m.name+'</b> <span class="meta">'+m.email+' · '+m.createdAt+'</span><p><b>'+m.subject+'</b></p><p>'+m.message.replace(/</g,'&lt;')+'</p></div>').join('')||'<p>No messages yet.</p>';}</script>
+document.getElementById('list').innerHTML=d.map(m=>'<div class="msg'+(m.read?'':' unread')+'"><b>'+m.name+'</b> <span class="meta">'+m.email+' · '+m.createdAt+'</span><p><b>'+m.subject+'</b></p><p>'+m.message.replace(/</g,'&lt;')+'</p></div>').join('')||'<p>No messages yet.</p>';
+const r2=await fetch('/api/reviews');const revs=await r2.json();
+document.getElementById('revs').innerHTML=revs.map(v=>'<div class="msg"><b>'+v.name.replace(/</g,'&lt;')+'</b> <span class="meta">'+'★'.repeat(v.rating)+' · '+v.createdAt+'</span><p>'+v.comment.replace(/</g,'&lt;')+'</p><button onclick="delRev(\\''+v.id+'\\')">Delete</button></div>').join('')||'<p>No reviews yet.</p>';
+window._t=t;}
+async function delRev(id){await fetch('/api/reviews/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+window._t}});load();}</script>
 </body></html>`);
 });
 
