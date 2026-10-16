@@ -1,6 +1,7 @@
 // Backend API base URL — set after deploying the backend (e.g. on Render).
 // Leave empty to run frontend-only (contact form will show a notice).
-const BACKEND_URL = ""; // e.g. "https://usman-portfolio-api.onrender.com"
+const BACKEND_URL = "https://portfolio-nu8s.onrender.com"; // e.g. "https://usman-portfolio-api.onrender.com"
+
 
 // Count-up animation for hero stats
 document.querySelectorAll('[data-count]').forEach(el => {
@@ -13,6 +14,7 @@ document.querySelectorAll('[data-count]').forEach(el => {
     el.textContent = cur;
   }, 40);
 });
+
 
 // Contact form → backend API
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
