@@ -1,6 +1,7 @@
 // Backend API base URL — set after deploying the backend (e.g. on Render).
 // Leave empty to run frontend-only (contact form will show a notice).
 const BACKEND_URL = "https://portfolio-nu8s.onrender.com"; // e.g. "https://usman-portfolio-api.onrender.com"
+const BOOKING_URL = ""; // Cal.com booking link — filled after account setup
 
 // ---------- Urdu / English toggle ----------
 const I18N = {
@@ -16,7 +17,15 @@ h_projects:"Featured Projects",h_videos:"Video Showcase",videos_lead:"AI-generat
 h_pubs:"Publications",h_edu:"Education & Certifications",
 h_reviews:"Reviews",reviews_lead:"What clients and collaborators say about working with me.",review_form:"Leave a review",btn_review:"Submit Review",
 h_contact:"Get In Touch",contact_lead:"Have a project, a role, or a research collaboration in mind? Send a message — it lands straight in my inbox dashboard.",btn_send:"Send Message",
-nav_blog:"Blog",nav_services:"Services",h_blog:"Blog & Articles",blog_lead:"My published articles on history, AI research and digital marketing.",
+nav_blog:"Blog",nav_services:"Services",nav_faq:"FAQ",h_blog:"Blog & Articles",blog_lead:"My published articles on history, AI research and digital marketing.",
+h_faq:"FAQ",
+fq1:"What services do you offer?",fa1:"AI video advertisements and reels, Urdu/English TTS voiceovers, web prototyping, and WordPress business websites.",
+fq2:"How much do you charge?",fa2:"Video projects start at $5 — see the Services & Pricing section. Custom quotes for bigger work.",
+fq3:"How do we start a project?",fa3:"Send a message through the contact form or tap the WhatsApp button — I usually reply within a day.",
+fq4:"Do you work with Pakistani clients?",fa4:"Yes — most of my video-ad work is for Pakistani small businesses selling on WhatsApp and social media.",
+fq5:"Are you open to research collaboration?",fa5:"Absolutely. My publications are open-access — reach out if you want to build on them.",
+fq6:"What is your typical delivery time?",fa6:"2–5 days for standard video projects; faster on the Premium package.",
+h_book:"Book a Meeting",book_lead:"Pick a time that suits you — let's discuss your project face to face.",book_btn:"Open Calendar",
 h_services:"Services & Pricing",services_lead:"AI video ads and reels — order directly or via Fiverr.",order_now:"Order Now",visitors:"visitors",
 ph_name:"Your name",ph_email:"Your email",ph_subject:"Subject",ph_review:"Your review...",ph_message:"Your message..."},
 ur: {nav_about:"میرے بارے میں",nav_skills:"مہارتیں",nav_exp:"تجربہ",nav_projects:"پراجیکٹس",nav_videos:"ویڈیوز",nav_research:"تحقیق",nav_reviews:"تبصرے",nav_hire:"رابطہ کریں",
@@ -31,7 +40,15 @@ h_projects:"نمایاں پراجیکٹس",h_videos:"ویڈیو شوکیس",vide
 h_pubs:"اشاعتیں",h_edu:"تعلیم اور سرٹیفیکیشنز",
 h_reviews:"تبصرے",reviews_lead:"کلائنٹس اور ساتھی میرے ساتھ کام کے بارے میں کیا کہتے ہیں۔",review_form:"اپنا تبصرہ لکھیں",btn_review:"تبصرہ بھیجیں",
 h_contact:"رابطہ کریں",contact_lead:"کوئی پراجیکٹ، نوکری، یا تحقیقی تعاون ذہن میں ہے؟ پیغام بھیجیں — یہ سیدھا میرے ان باکس میں آئے گا۔",btn_send:"پیغام بھیجیں",
-nav_blog:"بلاگ",nav_services:"سروسز",h_blog:"بلاگ اور مضامین",blog_lead:"تاریخ، اے آئی تحقیق اور ڈیجیٹل مارکیٹنگ پر میرے شائع شدہ مضامین۔",
+nav_blog:"بلاگ",nav_services:"سروسز",nav_faq:"سوالات",h_blog:"بلاگ اور مضامین",blog_lead:"تاریخ، اے آئی تحقیق اور ڈیجیٹل مارکیٹنگ پر میرے شائع شدہ مضامین۔",
+h_faq:"اکثر پوچھے گئے سوالات",
+fq1:"آپ کون سی سروسز دیتے ہیں؟",fa1:"اے آئی ویڈیو اشتہارات اور ریلز، اردو/انگریزی ٹی ٹی ایس وائس اوورز، ویب پروٹوٹائپنگ، اور ورڈپریس بزنس ویب سائٹس۔",
+fq2:"آپ کی فیس کیا ہے؟",fa2:"ویڈیو پراجیکٹس $5 سے شروع — سروسز اور قیمتیں والا سیکشن دیکھیں۔ بڑے کام کے لیے کسٹم کوٹ۔",
+fq3:"پراجیکٹ کیسے شروع کریں؟",fa3:"رابطہ فارم سے پیغام بھیجیں یا واٹس ایپ بٹن دبائیں — میں عام طور پر ایک دن میں جواب دیتا ہوں۔",
+fq4:"کیا آپ پاکستانی کلائنٹس کے ساتھ کام کرتے ہیں؟",fa4:"جی ہاں — میرا زیادہ تر ویڈیو ایڈ کا کام پاکستانی چھوٹے کاروباروں کے لیے ہے جو واٹس ایپ اور سوشل میڈیا پر بیچتے ہیں۔",
+fq5:"کیا تحقیقی تعاون کے لیے تیار ہیں؟",fa5:"بالکل۔ میری اشاعتیں اوپن ایکسیس ہیں — اگر آپ ان پر کام بڑھانا چاہیں تو رابطہ کریں۔",
+fq6:"ڈیلیوری میں کتنا وقت لگتا ہے؟",fa6:"معیاری ویڈیو پراجیکٹس کے لیے 2 سے 5 دن؛ پریمیم پیکج پر تیز۔",
+h_book:"میٹنگ بک کریں",book_lead:"اپنے لیے مناسب وقت چنیں — آئیے آپ کے پراجیکٹ پر بات کریں۔",book_btn:"کیلنڈر کھولیں",
 h_services:"سروسز اور قیمتیں",services_lead:"اے آئی ویڈیو اشتہارات اور ریلز — براہ راست یا فائیور کے ذریعے آرڈر کریں۔",order_now:"آرڈر کریں",visitors:"وزٹرز",
 ph_name:"آپ کا نام",ph_email:"آپ کا ای میل",ph_subject:"موضوع",ph_review:"آپ کا تبصرہ...",ph_message:"آپ کا پیغام..."}};
 
@@ -55,6 +72,12 @@ function applyTheme(t){
 }
 document.getElementById('theme-toggle').addEventListener('click', () => applyTheme(theme === 'light' ? 'dark' : 'light'));
 applyTheme(theme);
+
+// ---------- Booking link ----------
+(function(){
+  const b = document.getElementById('book-btn');
+  b.href = BOOKING_URL || 'https://wa.me/923187579301?text=Assalam-o-Alaikum!%20I%20want%20to%20book%20a%20meeting.';
+})();
 
 // ---------- Visitor counter ----------
 async function trackVisit(){

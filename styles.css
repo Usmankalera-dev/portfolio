@@ -96,6 +96,20 @@ a:hover{color:var(--amber2)}
 footer{text-align:center;padding:40px 5%;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
 .foot-links{margin-top:8px}
 
+/* github stats */
+.gh-stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:28px;justify-content:center}
+.gh-stats img{max-width:100%;border-radius:12px;border:1px solid var(--line)}
+
+/* faq */
+.faq-list{max-width:760px;margin:0 auto}
+.faq-list details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:16px 20px}
+.faq-list summary{cursor:pointer;font-weight:700;color:var(--text)}
+.faq-list summary:hover{color:var(--amber)}
+.faq-list details p{margin-top:10px;color:var(--muted)}
+
+/* booking */
+.book-wrap{text-align:center;margin-top:10px}
+
 /* pricing */
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 .price-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 24px;text-align:center}
