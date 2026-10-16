@@ -199,3 +199,26 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     status.textContent = 'Could not reach the server. Please email me directly.';
   }
 });
+
+// Mobile hamburger menu
+(function(){
+  var nav=document.querySelector('.nav'),btn=document.getElementById('menu-toggle');
+  if(!nav||!btn)return;
+  btn.addEventListener('click',function(e){e.stopPropagation();nav.classList.toggle('open');});
+  nav.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click',function(){nav.classList.remove('open');});
+  });
+  document.addEventListener('click',function(e){
+    if(nav.classList.contains('open')&&!nav.contains(e.target))nav.classList.remove('open');
+  });
+})();
+
+// Back-to-top button
+(function(){
+  var b=document.getElementById('to-top');
+  if(!b)return;
+  window.addEventListener('scroll',function(){
+    b.classList.toggle('show',window.scrollY>600);
+  },{passive:true});
+  b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+})();

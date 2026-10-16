@@ -169,8 +169,24 @@ html[dir="rtl"] iframe#tawkchat-container{left:20px!important;right:auto!importa
 .star-input span:hover{color:var(--amber2)}
 .star-input span.lit{color:var(--amber);text-shadow:0 0 12px rgba(245,166,35,.5)}
 
+/* sections don't hide under the fixed nav when jumping via anchors */
+.section{scroll-margin-top:76px}
+
+/* hamburger (mobile) */
+.menu-btn{display:none;font-size:1.3rem}
 @media(max-width:640px){
   .nav-links a:not(.btn-small){display:none}
+  .menu-btn{display:inline-block}
+  .nav{position:fixed}
+  .nav.open .nav-links{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:0;padding:8px 5% 14px;max-height:70vh;overflow-y:auto}
+  .nav.open .nav-links a:not(.btn-small){display:block;padding:12px 4px;border-bottom:1px solid var(--line);font-size:1rem}
+  .nav.open .nav-links a:last-of-type{border-bottom:none}
+  .nav.open .menu-btn{order:-1}
   #contact-form .row{grid-template-columns:1fr}
   .hero-stats{gap:20px}
 }
+
+/* back-to-top */
+#to-top{position:fixed;bottom:24px;right:24px;z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--amber);font-size:1.4rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+#to-top.show{opacity:1;pointer-events:auto}
+#to-top:hover{transform:scale(1.1)}
