@@ -17,6 +17,7 @@
     <a href="#experience">Experience</a>
     <a href="#projects">Projects</a>
     <a href="#publications">Research</a>
+    <a href="#reviews">Reviews</a>
     <a href="#contact" class="btn-small">Hire Me</a>
   </div>
 </nav>
@@ -109,6 +110,28 @@
     <div class="card"><h3>AI for Brainstorming and Planning</h3><p>Google (Coursera) · July 2026</p></div>
     <div class="card"><h3>Generative AI Essentials</h3><p>University of Michigan (Coursera) · July 2026</p></div>
   </div>
+</section>
+
+<section id="reviews" class="section">
+  <h2>Reviews</h2>
+  <p class="lead">What clients and collaborators say about working with me.</p>
+  <div class="rating-summary">
+    <b id="avg-rating">–</b>
+    <div><div class="stars-display" id="avg-stars"></div><span id="rating-count" class="muted"></span></div>
+  </div>
+  <div id="reviews-list" class="cards"></div>
+  <h3 class="review-form-title">Leave a review</h3>
+  <form id="review-form">
+    <div class="star-input" id="star-input">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+    <div class="row">
+      <input type="text" name="name" placeholder="Your name" required maxlength="80">
+    </div>
+    <textarea name="comment" placeholder="Your review..." required maxlength="500" rows="3"></textarea>
+    <button type="submit" class="btn">Submit Review</button>
+    <p id="review-status" class="form-status"></p>
+  </form>
 </section>
 
 <section id="contact" class="section">
