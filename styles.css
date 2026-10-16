@@ -146,6 +146,11 @@ html[dir="rtl"] .pub{border-left:1px solid var(--line);border-right:4px solid va
 html[dir="rtl"] .wa-float{right:24px;left:auto}
 html[dir="rtl"] iframe#tawkchat-container{left:20px!important;right:auto!important}
 
+/* footer WhatsApp button */
+.foot-cta{margin:14px 0}
+.wa-btn{display:inline-block;background:#25d366;color:#fff!important;font-weight:700;padding:12px 28px;border-radius:999px;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s}
+.wa-btn:hover{transform:scale(1.05);color:#fff!important}
+
 /* reviews */
 .rating-summary{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .rating-summary b{font-size:3rem;color:var(--amber)}
