@@ -16,6 +16,8 @@ h_projects:"Featured Projects",h_videos:"Video Showcase",videos_lead:"AI-generat
 h_pubs:"Publications",h_edu:"Education & Certifications",
 h_reviews:"Reviews",reviews_lead:"What clients and collaborators say about working with me.",review_form:"Leave a review",btn_review:"Submit Review",
 h_contact:"Get In Touch",contact_lead:"Have a project, a role, or a research collaboration in mind? Send a message — it lands straight in my inbox dashboard.",btn_send:"Send Message",
+nav_blog:"Blog",nav_services:"Services",h_blog:"Blog & Articles",blog_lead:"My published articles on history, AI research and digital marketing.",
+h_services:"Services & Pricing",services_lead:"AI video ads and reels — order directly or via Fiverr.",order_now:"Order Now",visitors:"visitors",
 ph_name:"Your name",ph_email:"Your email",ph_subject:"Subject",ph_review:"Your review...",ph_message:"Your message..."},
 ur: {nav_about:"میرے بارے میں",nav_skills:"مہارتیں",nav_exp:"تجربہ",nav_projects:"پراجیکٹس",nav_videos:"ویڈیوز",nav_research:"تحقیق",nav_reviews:"تبصرے",nav_hire:"رابطہ کریں",
 kicker:"اے آئی انجینئر اور کریئیٹر",tagline:"بی ایس آرٹیفیشل انٹیلیجنس · جنریٹو اے آئی پریکٹیشنر · شائع شدہ محقق",
@@ -29,6 +31,8 @@ h_projects:"نمایاں پراجیکٹس",h_videos:"ویڈیو شوکیس",vide
 h_pubs:"اشاعتیں",h_edu:"تعلیم اور سرٹیفیکیشنز",
 h_reviews:"تبصرے",reviews_lead:"کلائنٹس اور ساتھی میرے ساتھ کام کے بارے میں کیا کہتے ہیں۔",review_form:"اپنا تبصرہ لکھیں",btn_review:"تبصرہ بھیجیں",
 h_contact:"رابطہ کریں",contact_lead:"کوئی پراجیکٹ، نوکری، یا تحقیقی تعاون ذہن میں ہے؟ پیغام بھیجیں — یہ سیدھا میرے ان باکس میں آئے گا۔",btn_send:"پیغام بھیجیں",
+nav_blog:"بلاگ",nav_services:"سروسز",h_blog:"بلاگ اور مضامین",blog_lead:"تاریخ، اے آئی تحقیق اور ڈیجیٹل مارکیٹنگ پر میرے شائع شدہ مضامین۔",
+h_services:"سروسز اور قیمتیں",services_lead:"اے آئی ویڈیو اشتہارات اور ریلز — براہ راست یا فائیور کے ذریعے آرڈر کریں۔",order_now:"آرڈر کریں",visitors:"وزٹرز",
 ph_name:"آپ کا نام",ph_email:"آپ کا ای میل",ph_subject:"موضوع",ph_review:"آپ کا تبصرہ...",ph_message:"آپ کا پیغام..."}};
 
 let lang = localStorage.getItem('uk-lang') || 'en';
@@ -41,6 +45,34 @@ function applyLang(l){
 }
 document.getElementById('lang-toggle').addEventListener('click', () => applyLang(lang === 'ur' ? 'en' : 'ur'));
 applyLang(lang);
+
+// ---------- Light / dark theme ----------
+let theme = localStorage.getItem('uk-theme') || 'dark';
+function applyTheme(t){
+  theme = t; localStorage.setItem('uk-theme', t);
+  document.documentElement.dataset.theme = t === 'light' ? 'light' : '';
+  document.getElementById('theme-toggle').textContent = t === 'light' ? '🌙' : '☀️';
+}
+document.getElementById('theme-toggle').addEventListener('click', () => applyTheme(theme === 'light' ? 'dark' : 'light'));
+applyTheme(theme);
+
+// ---------- Visitor counter ----------
+async function trackVisit(){
+  const el = document.getElementById('visitor-count');
+  if (!BACKEND_URL) { el.textContent = '–'; return; }
+  try {
+    let res;
+    if (!sessionStorage.getItem('uk-visited')) {
+      res = await fetch(BACKEND_URL + '/api/visits', { method: 'POST' });
+      sessionStorage.setItem('uk-visited', '1');
+    } else {
+      res = await fetch(BACKEND_URL + '/api/visits');
+    }
+    const d = await res.json();
+    el.textContent = d.count.toLocaleString();
+  } catch(e){ el.textContent = '–'; }
+}
+trackVisit();
 document.querySelectorAll('[data-count]').forEach(el => {
   const target = +el.dataset.count;
   let cur = 0;

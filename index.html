@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Usman Kalera — AI Engineer & Creator</title>
 <meta name="description" content="Portfolio of Usman Kalera — AI Engineer & Creator. Generative AI, AI video ads, TTS pipelines, and published research.">
+<meta property="og:title" content="Usman Kalera — AI Engineer & Creator">
+<meta property="og:description" content="Generative AI practitioner & published researcher. AI video ads, TTS pipelines, 4 research papers with 8 DOIs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://usmankalera-dev.github.io/portfolio/">
+<meta property="og:image" content="https://usmankalera-dev.github.io/portfolio/assets/photo.jpg">
+<link rel="canonical" href="https://usmankalera-dev.github.io/portfolio/">
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Usman Kalera","jobTitle":"AI Engineer & Creator","url":"https://usmankalera-dev.github.io/portfolio/","address":{"@type":"PostalAddress","addressLocality":"Lahore","addressCountry":"PK"},"sameAs":["https://github.com/Usmankalera-dev","https://orcid.org/0009-0003-5273-177X","https://sueprior.academia.edu/MUsman"]}
+</script>
 </head>
 <body>
 
@@ -18,7 +27,10 @@
     <a href="#projects" data-i18n="nav_projects">Projects</a>
     <a href="#videos" data-i18n="nav_videos">Videos</a>
     <a href="#publications" data-i18n="nav_research">Research</a>
+    <a href="#blog" data-i18n="nav_blog">Blog</a>
+    <a href="#services" data-i18n="nav_services">Services</a>
     <a href="#reviews" data-i18n="nav_reviews">Reviews</a>
+    <button id="theme-toggle" class="lang-btn" title="Light / Dark">☀️</button>
     <button id="lang-toggle" class="lang-btn">اردو</button>
     <a href="#contact" class="btn-small" data-i18n="nav_hire">Hire Me</a>
   </div>
@@ -129,6 +141,26 @@
   </div>
 </section>
 
+<section id="blog" class="section">
+  <h2 data-i18n="h_blog">Blog & Articles</h2>
+  <p class="lead" data-i18n="blog_lead">My published articles on history, AI research and digital marketing.</p>
+  <div class="cards">
+    <div class="card"><h3>The Kalera Biradari</h3><p>A historical and ethnographic inquiry into a Punjabi Muslim Jat gotra — Urdu & English.</p><a href="https://kalera-biradari.blogspot.com/" target="_blank" rel="noopener">Read →</a></div>
+    <div class="card"><h3>Dev.to Articles</h3><p>AI research proposals and experiments, written for developers.</p><a href="https://dev.to/muhammad_usmansu92bsaim" target="_blank" rel="noopener">Read →</a></div>
+    <div class="card"><h3>Hashnode</h3><p>Code-switched TTS prosody research — publication "Usman Kalera".</p><a href="https://usmankalera.hashnode.dev" target="_blank" rel="noopener">Read →</a></div>
+  </div>
+</section>
+
+<section id="services" class="section">
+  <h2 data-i18n="h_services">Services & Pricing</h2>
+  <p class="lead" data-i18n="services_lead">AI video ads and reels — order directly or via Fiverr.</p>
+  <div class="pricing-grid">
+    <div class="price-card"><h3>Basic</h3><b class="price">$5</b><ul><li>1 AI short video (up to 15s)</li><li>1 revision</li><li>Delivery in 2 days</li></ul><a class="btn" href="https://www.fiverr.com/usman0_kalera" target="_blank" rel="noopener" data-i18n="order_now">Order Now</a></div>
+    <div class="price-card hot"><h3>Standard</h3><b class="price">$10</b><ul><li>1 AI video ad (up to 30s)</li><li>Urdu/English voiceover</li><li>2 revisions</li><li>Delivery in 3 days</li></ul><a class="btn" href="https://www.fiverr.com/usman0_kalera" target="_blank" rel="noopener" data-i18n="order_now">Order Now</a></div>
+    <div class="price-card"><h3>Premium</h3><b class="price">$20</b><ul><li>1 AI video ad (up to 60s)</li><li>Urdu/English voiceover + subtitles</li><li>3 revisions</li><li>Priority delivery</li></ul><a class="btn" href="https://www.fiverr.com/usman0_kalera" target="_blank" rel="noopener" data-i18n="order_now">Order Now</a></div>
+  </div>
+</section>
+
 <section id="reviews" class="section">
   <h2 data-i18n="h_reviews">Reviews</h2>
   <p class="lead" data-i18n="reviews_lead">What clients and collaborators say about working with me.</p>
@@ -169,6 +201,7 @@
 <footer>
   <p>© 2026 Usman Kalera · Lahore, Pakistan · Built with ♥ and AI</p>
   <p class="foot-links"><a href="https://orcid.org/0009-0003-5273-177X" target="_blank" rel="noopener">ORCID</a> · <a href="https://github.com/Usmankalera-dev" target="_blank" rel="noopener">GitHub</a> · <a href="https://sueprior.academia.edu/MUsman" target="_blank" rel="noopener">Academia.edu</a></p>
+  <p class="foot-links">👁 <span id="visitor-count">…</span> <span data-i18n="visitors">visitors</span></p>
 </footer>
 
 <script src="app.js"></script>
