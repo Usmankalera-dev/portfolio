@@ -49,6 +49,7 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const status = document.getElementById('review-status');
   const form = e.target;
+  const fd = new FormData(form);
   if (!BACKEND_URL) {
     status.className = 'form-status err';
     status.textContent = 'Reviews backend is not connected yet.';
@@ -59,24 +60,24 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
     const res = await fetch(BACKEND_URL + '/api/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name.value.trim(), rating: chosenRating, comment: form.comment.value.trim() })
+      body: JSON.stringify({ name: String(fd.get('name') || '').trim(), rating: chosenRating, comment: String(fd.get('comment') || '').trim() })
     });
     const out = await res.json();
     if (res.ok) {
       status.className = 'form-status ok'; status.textContent = 'Thanks for your review! ✓';
-      form.reset(); chosenRating = 5; paintStars(5); loadReviews();
-    } else { status.className = 'form-status err'; status.textContent = out.error || 'Something went wrong.'; }
+      form.reset(); chosenRating = 5; paintStars(5); loadReviews();    } else { status.className = 'form-status err'; status.textContent = out.error || 'Something went wrong.'; }
   } catch(e){ status.className = 'form-status err'; status.textContent = 'Could not reach the server.'; }
 });
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const status = document.getElementById('form-status');
   const form = e.target;
+  const fd = new FormData(form);
   const data = {
-    name: form.name.value.trim(),
-    email: form.email.value.trim(),
-    subject: form.subject.value.trim(),
-    message: form.message.value.trim()
+    name: String(fd.get('name') || '').trim(),
+    email: String(fd.get('email') || '').trim(),
+    subject: String(fd.get('subject') || '').trim(),
+    message: String(fd.get('message') || '').trim()
   };
   if (!BACKEND_URL) {
     status.className = 'form-status err';
