@@ -262,6 +262,15 @@
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+// Force the tawk.to bubble/panel to bottom-LEFT so it never overlaps the WhatsApp button (bottom-right)
+function fixTawkPos(){
+  var f=document.querySelector('iframe[title="chat widget"]');
+  if(f){f.style.setProperty('left','20px','important');f.style.setProperty('right','auto','important');}
+}
+Tawk_API.onLoad=fixTawkPos;
+Tawk_API.onChatMaximized=fixTawkPos;
+Tawk_API.onChatMinimized=fixTawkPos;
+setInterval(fixTawkPos,2000);
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;

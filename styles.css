@@ -128,6 +128,8 @@ footer{text-align:center;padding:40px 5%;border-top:1px solid var(--line);color:
 @media(max-width:600px){.wa-float{width:52px;height:52px;bottom:24px;right:16px}}
 /* move tawk.to chat bubble to bottom-left so it never overlaps WhatsApp */
 iframe#tawkchat-container{left:20px!important;right:auto!important;}
+iframe[title="chat widget"]{left:20px!important;right:auto!important;}
+html[dir="rtl"] iframe[title="chat widget"]{left:20px!important;right:auto!important}
 
 /* video showcase */
 .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
