@@ -264,8 +264,10 @@
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 // Force the tawk.to bubble/panel to bottom-LEFT so it never overlaps the WhatsApp button (bottom-right)
 function fixTawkPos(){
-  var f=document.querySelector('iframe[title="chat widget"]');
-  if(f){f.style.setProperty('left','20px','important');f.style.setProperty('right','auto','important');}
+  document.querySelectorAll('iframe[title="chat widget"],iframe[title="chat panel"]').forEach(function(f){
+    f.style.setProperty('left','20px','important');
+    f.style.setProperty('right','auto','important');
+  });
 }
 Tawk_API.onLoad=fixTawkPos;
 Tawk_API.onChatMaximized=fixTawkPos;
