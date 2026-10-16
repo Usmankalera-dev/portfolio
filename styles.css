@@ -123,9 +123,11 @@ footer{text-align:center;padding:40px 5%;border-top:1px solid var(--line);color:
 /* floating WhatsApp + language toggle */
 .lang-btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.9rem}
 .lang-btn:hover{border-color:var(--amber);color:var(--amber)}
-.wa-float{position:fixed;bottom:176px;right:24px;z-index:60;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s}
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:60;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s}
 .wa-float:hover{transform:scale(1.1)}
-@media(max-width:600px){.wa-float{width:52px;height:52px;bottom:170px;right:16px}}
+@media(max-width:600px){.wa-float{width:52px;height:52px;bottom:24px;right:16px}}
+/* move tawk.to chat bubble to bottom-left so it never overlaps WhatsApp */
+iframe#tawkchat-container{left:20px!important;right:auto!important;}
 
 /* video showcase */
 .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
@@ -140,6 +142,7 @@ html[dir="rtl"] .timeline{border-left:none;border-right:2px solid var(--amber);m
 html[dir="rtl"] .t-item::before{left:auto;right:-37px}
 html[dir="rtl"] .pub{border-left:1px solid var(--line);border-right:4px solid var(--amber)}
 html[dir="rtl"] .wa-float{right:24px;left:auto}
+html[dir="rtl"] iframe#tawkchat-container{left:20px!important;right:auto!important}
 
 /* reviews */
 .rating-summary{display:flex;align-items:center;gap:16px;margin-bottom:24px}
