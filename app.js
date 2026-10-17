@@ -26,7 +26,7 @@ fq4:"Do you work with Pakistani clients?",fa4:"Yes — most of my video-ad work 
 fq5:"Are you open to research collaboration?",fa5:"Absolutely. My publications are open-access — reach out if you want to build on them.",
 fq6:"What is your typical delivery time?",fa6:"2–5 days for standard video projects; faster on the Premium package.",
 h_book:"Book a Meeting",book_lead:"Pick a time that suits you — let's discuss your project face to face.",book_btn:"Open Calendar",
-h_services:"Services & Pricing",services_lead:"AI video ads and reels — order directly or via Fiverr.",order_now:"Order Now",visitors:"visitors",verified_label:"Verified on",whatsapp_chat:"Chat on WhatsApp",vcard_dl:"Save My Contact (vCard)",
+h_services:"Services & Pricing",services_lead:"AI video ads and reels — order directly or via Fiverr.",order_now:"Order Now",visitors:"visitors",verified_label:"Verified on",whatsapp_chat:"Chat on WhatsApp",vcard_dl:"Save My Contact (vCard)",avail_badge:"Available for freelance projects",h_process:"How It Works",process_lead:"A simple 3-step process — no confusion, no delays.",step1t:"Contact",step1d:"Tell me about your project — WhatsApp, live chat, or the form below.",step2t:"Discuss & Plan",step2d:"We agree on scope, timeline, and price before work starts.",step3t:"Deliver",step3d:"You get the finished work, with revisions included.",
 ph_name:"Your name",ph_email:"Your email",ph_subject:"Subject",ph_review:"Your review...",ph_message:"Your message..."},
 ur: {nav_about:"میرے بارے میں",nav_skills:"مہارتیں",nav_exp:"تجربہ",nav_projects:"پراجیکٹس",nav_videos:"ویڈیوز",nav_research:"تحقیق",nav_reviews:"تبصرے",nav_hire:"رابطہ کریں",
 kicker:"اے آئی انجینئر اور کریئیٹر",tagline:"بی ایس آرٹیفیشل انٹیلیجنس · جنریٹو اے آئی پریکٹیشنر · شائع شدہ محقق",
@@ -49,7 +49,7 @@ fq4:"کیا آپ پاکستانی کلائنٹس کے ساتھ کام کرتے �
 fq5:"کیا تحقیقی تعاون کے لیے تیار ہیں؟",fa5:"بالکل۔ میری اشاعتیں اوپن ایکسیس ہیں — اگر آپ ان پر کام بڑھانا چاہیں تو رابطہ کریں۔",
 fq6:"ڈیلیوری میں کتنا وقت لگتا ہے؟",fa6:"معیاری ویڈیو پراجیکٹس کے لیے 2 سے 5 دن؛ پریمیم پیکج پر تیز۔",
 h_book:"میٹنگ بک کریں",book_lead:"اپنے لیے مناسب وقت چنیں — آئیے آپ کے پراجیکٹ پر بات کریں۔",book_btn:"کیلنڈر کھولیں",
-h_services:"سروسز اور قیمتیں",services_lead:"اے آئی ویڈیو اشتہارات اور ریلز — براہ راست یا فائیور کے ذریعے آرڈر کریں۔",order_now:"آرڈر کریں",visitors:"وزٹرز",verified_label:"تصدیق شدہ",whatsapp_chat:"واٹس ایپ پر چیٹ کریں",vcard_dl:"میرا نمبر سیو کریں (vCard)",
+h_services:"سروسز اور قیمتیں",services_lead:"اے آئی ویڈیو اشتہارات اور ریلز — براہ راست یا فائیور کے ذریعے آرڈر کریں۔",order_now:"آرڈر کریں",visitors:"وزٹرز",verified_label:"تصدیق شدہ",whatsapp_chat:"واٹس ایپ پر چیٹ کریں",vcard_dl:"میرا نمبر سیو کریں (vCard)",avail_badge:"فری لانس پراجیکٹس کے لیے دستیاب",h_process:"کام کیسے ہوتا ہے",process_lead:"آسان 3 مرحلہ عمل — نہ الجھن، نہ تاخیر۔",step1t:"رابطہ کریں",step1d:"اپنے پراجیکٹ کے بارے میں بتائیں — واٹس ایپ، لائیو چیٹ یا نیچے فارم۔",step2t:"بات چیت اور منصوبہ",step2d:"کام شروع ہونے سے پہلے دائرہ، وقت اور قیمت طے کرتے ہیں۔",step3t:"ڈیلیوری",step3d:"آپ کو مکمل کام ملتا ہے، نظرثانی سمیت۔",
 ph_name:"آپ کا نام",ph_email:"آپ کا ای میل",ph_subject:"موضوع",ph_review:"آپ کا تبصرہ...",ph_message:"آپ کا پیغام..."}};
 
 let lang = localStorage.getItem('uk-lang') || 'en';

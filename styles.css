@@ -151,6 +151,16 @@ html[dir="rtl"] iframe#tawkchat-container{left:20px!important;right:auto!importa
 .wa-btn{display:inline-block;background:#25d366;color:#fff!important;font-weight:700;padding:12px 28px;border-radius:999px;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s}
 .wa-btn:hover{transform:scale(1.05);color:#fff!important}
 
+/* availability badge + work process */
+.avail{display:inline-flex;align-items:center;gap:8px;margin:12px 0 4px;padding:7px 18px;border:1px solid var(--line);border-radius:999px;font-size:.9rem;background:var(--card)}
+.avail .dot{width:10px;height:10px;border-radius:50%;background:#25d366;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 10px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:6px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.step .n{font-size:2rem;font-weight:800;color:var(--amber)}
+.step h3{margin:8px 0 6px;font-size:1.1rem}
+.step p{color:var(--muted);font-size:.95rem}
+
 /* reviews */
 .rating-summary{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .rating-summary b{font-size:3rem;color:var(--amber)}
