@@ -63,8 +63,8 @@ function applyLang(l){
 document.getElementById('lang-toggle').addEventListener('click', () => applyLang(lang === 'ur' ? 'en' : 'ur'));
 applyLang(lang);
 
-// ---------- Light / dark theme ----------
-let theme = localStorage.getItem('uk-theme') || 'dark';
+// ---------- Light / dark theme (respects system preference on first visit) ----------
+let theme = localStorage.getItem('uk-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 function applyTheme(t){
   theme = t; localStorage.setItem('uk-theme', t);
   document.documentElement.dataset.theme = t === 'light' ? 'light' : '';
@@ -249,4 +249,15 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   var el=document.getElementById('last-upd');
   if(!el||!document.lastModified)return;
   try{el.textContent=new Date(document.lastModified).toLocaleDateString('en-GB',{month:'short',year:'numeric'});}catch(e){el.textContent=document.lastModified;}
+})();
+
+// Reading progress bar
+(function(){
+  var bar=document.getElementById('progress');
+  if(!bar)return;
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+  },{passive:true});
 })();
