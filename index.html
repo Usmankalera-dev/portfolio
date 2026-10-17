@@ -16,6 +16,8 @@
 <meta name="twitter:description" content="Generative AI practitioner & published researcher. AI video ads, TTS pipelines, 4 research papers with 8 DOIs.">
 <meta name="twitter:image" content="https://usmankalera-dev.github.io/portfolio/assets/photo.jpg">
 <meta name="theme-color" content="#0d0d0f">
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="ur_PK" />
 <meta name="author" content="Usman Kalera">
 <meta name="robots" content="index, follow">
 <meta name="msvalidate.01" content="D86DEF230442482ECDA3D9C2E616F828" />
@@ -23,7 +25,7 @@
 <link rel="alternate" hreflang="ur" href="https://usmankalera-dev.github.io/portfolio/?lang=ur" />
 <link rel="alternate" hreflang="x-default" href="https://usmankalera-dev.github.io/portfolio/" />
 <link rel="canonical" href="https://usmankalera-dev.github.io/portfolio/">
-<link rel="stylesheet" href="styles.css?v=39">
+<link rel="stylesheet" href="styles.css?v=40">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Usman Kalera","jobTitle":"AI Engineer & Creator","url":"https://usmankalera-dev.github.io/portfolio/","image":"https://usmankalera-dev.github.io/portfolio/assets/photo.jpg","address":{"@type":"PostalAddress","addressLocality":"Lahore","addressCountry":"PK"},"sameAs":["https://github.com/Usmankalera-dev","https://www.linkedin.com/in/muhammad-usman-63aa07443","https://orcid.org/0009-0003-5273-177X","https://sueprior.academia.edu/MUsman","https://kalera-biradari.blogspot.com/","https://www.fiverr.com/usman0_kalera"]}
 </script>
@@ -44,7 +46,7 @@
 </script>
 </head>
 <body>
-
+<a class="skip" href="#about" data-i18n="skip">Skip to content</a>
 <nav class="nav">
   <a class="brand" href="#top">UK<span>.</span></a>
   <div class="nav-links">
@@ -266,9 +268,10 @@
   <p class="foot-links">✅ <span data-i18n="verified_label">Verified on</span>: Google Search Console · Bing Webmaster Tools · IndexNow</p>
   <p class="foot-cta"><a class="wa-btn" href="https://wa.me/923187579301?text=Assalam-o-Alaikum!%20I%20saw%20your%20portfolio%20and%20want%20to%20discuss%20a%20project." target="_blank" rel="noopener">💬 <span data-i18n="whatsapp_chat">Chat on WhatsApp</span></a></p>
   <p class="foot-links">👁 <span id="visitor-count">…</span> <span data-i18n="visitors">visitors</span></p>
+  <p class="foot-links muted"><span data-i18n="last_upd">Last updated</span>: <span id="last-upd">…</span></p>
 </footer>
 
-<script src="app.js?v=39"></script>
+<script src="app.js?v=40"></script>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -283,14 +286,17 @@ Tawk_API.onLoad=fixTawkPos;
 Tawk_API.onChatMaximized=fixTawkPos;
 Tawk_API.onChatMinimized=fixTawkPos;
 setInterval(fixTawkPos,2000);
-(function(){
+function loadTawk(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
 s1.src='https://embed.tawk.to/6ad25e6fdf75d934cabc4f96/1k52s1q34';
 s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
-})();
+}
+// Defer chat widget until the page is fully loaded (faster initial paint)
+if(document.readyState==='complete'){setTimeout(loadTawk,2000);}
+else{window.addEventListener('load',function(){setTimeout(loadTawk,2000);});}
 </script>
 <!--End of Tawk.to Script-->
 <button id="to-top" aria-label="Back to top">↑</button>
