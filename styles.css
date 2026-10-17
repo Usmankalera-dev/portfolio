@@ -161,6 +161,14 @@ html[dir="rtl"] iframe#tawkchat-container{left:20px!important;right:auto!importa
 .step h3{margin:8px 0 6px;font-size:1.1rem}
 .step p{color:var(--muted);font-size:.95rem}
 
+/* scrollspy active link */
+.nav-links a.active{color:var(--amber);font-weight:700}
+
+/* reveal-on-scroll (only when JS is on, so content never hides without it) */
+.js .section{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.js .section.visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.js .section{opacity:1;transform:none;transition:none}}
+
 /* reviews */
 .rating-summary{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .rating-summary b{font-size:3rem;color:var(--amber)}

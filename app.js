@@ -222,3 +222,24 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   },{passive:true});
   b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
 })();
+
+// Scrollspy: highlight the nav link of the section in view
+(function(){
+  document.body.classList.add('js');
+  var links=Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  if(!('IntersectionObserver' in window)||!secs.length)return;
+  var spy=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id);});
+      }
+    });
+  },{rootMargin:'-35% 0px -60% 0px'});
+  secs.forEach(function(s){spy.observe(s);});
+  // Reveal-on-scroll
+  var rev=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');rev.unobserve(e.target);}});
+  },{threshold:0.08});
+  document.querySelectorAll('.section').forEach(function(s){rev.observe(s);});
+})();
