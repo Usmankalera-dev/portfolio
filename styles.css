@@ -202,16 +202,40 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offs
 /* sections don't hide under the fixed nav when jumping via anchors */
 .section{scroll-margin-top:76px}
 
-/* hamburger (mobile) */
-.menu-btn{display:none;font-size:1.3rem}
+/* drawer footer (theme/lang/hire) — inline on desktop */
+.drawer-foot{display:flex;gap:10px;align-items:center}
+
+/* animated hamburger → X */
+.menu-btn{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;background:transparent;border:1px solid var(--line);border-radius:12px;cursor:pointer;padding:0 12px}
+.menu-btn span{display:block;height:2px;width:100%;background:var(--text);border-radius:2px;transition:transform .3s ease,opacity .25s ease,background .3s ease}
+.nav.open .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--amber)}
+.nav.open .menu-btn span:nth-child(2){opacity:0}
+.nav.open .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--amber)}
+.nav-scrim{display:none}
+
+/* slide-in drawer (mobile) */
 @media(max-width:640px){
-  .nav-links a:not(.btn-small){display:none}
-  .menu-btn{display:inline-block}
-  .nav{position:fixed}
-  .nav.open .nav-links{position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:0;padding:8px 5% 14px;max-height:70vh;overflow-y:auto}
-  .nav.open .nav-links a:not(.btn-small){display:block;padding:12px 4px;border-bottom:1px solid var(--line);font-size:1rem}
-  .nav.open .nav-links a:last-of-type{border-bottom:none}
-  .nav.open .menu-btn{order:-1}
+  .menu-btn{display:flex;position:relative;z-index:75}
+  .nav-links{position:fixed;top:0;right:0;height:100dvh;max-height:100dvh;width:min(320px,84vw);background:var(--bg2);border-left:1px solid var(--line);flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:96px 28px 28px;transform:translateX(105%);transition:transform .35s cubic-bezier(.32,.72,.35,1);z-index:70;overflow-y:auto;box-shadow:-20px 0 60px rgba(0,0,0,.45)}
+  .nav.open .nav-links{transform:translateX(0)}
+  .nav-links a{padding:13px 4px;font-size:1.05rem;border-bottom:1px solid var(--line);color:var(--text);opacity:0;transform:translateX(24px);transition:opacity .3s ease,transform .3s ease}
+  .nav.open .nav-links a{opacity:1;transform:none}
+  .nav.open .nav-links a:nth-child(1){transition-delay:.05s}
+  .nav.open .nav-links a:nth-child(2){transition-delay:.08s}
+  .nav.open .nav-links a:nth-child(3){transition-delay:.11s}
+  .nav.open .nav-links a:nth-child(4){transition-delay:.14s}
+  .nav.open .nav-links a:nth-child(5){transition-delay:.17s}
+  .nav.open .nav-links a:nth-child(6){transition-delay:.20s}
+  .nav.open .nav-links a:nth-child(7){transition-delay:.23s}
+  .nav.open .nav-links a:nth-child(8){transition-delay:.26s}
+  .nav.open .nav-links a:nth-child(9){transition-delay:.29s}
+  .nav.open .nav-links a:nth-child(10){transition-delay:.32s}
+  .nav.open .nav-links a:nth-child(11){transition-delay:.35s}
+  .nav.open .drawer-foot{opacity:1;transform:none;transition-delay:.4s}
+  .drawer-foot{margin-top:24px;opacity:0;transform:translateX(24px);transition:opacity .3s ease,transform .3s ease}
+  .drawer-foot .btn-small{flex:1;text-align:center}
+  .nav-scrim{display:block;position:fixed;top:0;left:0;width:100vw;height:100dvh;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:65}
+  .nav.open .nav-scrim{opacity:1;pointer-events:auto}
   #contact-form .row{grid-template-columns:1fr}
   .hero-stats{gap:20px}
 }

@@ -200,17 +200,17 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   }
 });
 
-// Mobile hamburger menu
+// Mobile drawer menu (animated hamburger + scrim + Escape)
 (function(){
-  var nav=document.querySelector('.nav'),btn=document.getElementById('menu-toggle');
+  var nav=document.querySelector('.nav'),btn=document.getElementById('menu-toggle'),scrim=document.getElementById('nav-scrim');
   if(!nav||!btn)return;
-  btn.addEventListener('click',function(e){e.stopPropagation();nav.classList.toggle('open');});
+  function setOpen(o){nav.classList.toggle('open',o);btn.setAttribute('aria-expanded',o?'true':'false');document.body.style.overflow=o?'hidden':'';}
+  btn.addEventListener('click',function(e){e.stopPropagation();setOpen(!nav.classList.contains('open'));});
   nav.querySelectorAll('.nav-links a').forEach(function(a){
-    a.addEventListener('click',function(){nav.classList.remove('open');});
+    a.addEventListener('click',function(){setOpen(false);});
   });
-  document.addEventListener('click',function(e){
-    if(nav.classList.contains('open')&&!nav.contains(e.target))nav.classList.remove('open');
-  });
+  if(scrim)scrim.addEventListener('click',function(){setOpen(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});
 })();
 
 // Back-to-top button

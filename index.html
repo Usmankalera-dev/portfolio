@@ -26,7 +26,7 @@
 <link rel="alternate" hreflang="x-default" href="https://usmankalera-dev.github.io/portfolio/" />
 <link rel="canonical" href="https://usmankalera-dev.github.io/portfolio/">
 <link rel="preload" as="image" href="assets/photo.jpg" fetchpriority="high">
-<link rel="stylesheet" href="styles.css?v=43">
+<link rel="stylesheet" href="styles.css?v=44">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Usman Kalera","jobTitle":"Founder & CEO, Rakhzaar Tech","url":"https://usmankalera-dev.github.io/portfolio/","image":"https://usmankalera-dev.github.io/portfolio/assets/photo.jpg","address":{"@type":"PostalAddress","addressLocality":"Lahore","addressCountry":"PK"},"sameAs":["https://github.com/Usmankalera-dev","https://www.linkedin.com/in/muhammad-usman-63aa07443","https://orcid.org/0009-0003-5273-177X","https://sueprior.academia.edu/MUsman","https://kalera-biradari.blogspot.com/","https://www.fiverr.com/usman0_kalera"],"worksFor":{"@type":"Organization","name":"Rakhzaar Tech","url":"https://muse.ai/s/rakhzaar-tech-kxx685xtxm5c5xa"}}
 </script>
@@ -51,8 +51,8 @@
 <a class="skip" href="#about" data-i18n="skip">Skip to content</a>
 <nav class="nav">
   <a class="brand" href="#top">UK<span>.</span></a>
+  <button id="menu-toggle" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   <div class="nav-links">
-    <button id="menu-toggle" class="lang-btn menu-btn" aria-label="Menu">☰</button>
     <a href="#about" data-i18n="nav_about">About</a>
     <a href="#vision" data-i18n="nav_vision">Vision</a>
     <a href="#skills" data-i18n="nav_skills">Skills</a>
@@ -64,10 +64,13 @@
     <a href="#services" data-i18n="nav_services">Services</a>
     <a href="#faq" data-i18n="nav_faq">FAQ</a>
     <a href="#reviews" data-i18n="nav_reviews">Reviews</a>
-    <button id="theme-toggle" class="lang-btn" title="Light / Dark">☀️</button>
-    <button id="lang-toggle" class="lang-btn">اردو</button>
-    <a href="#contact" class="btn-small" data-i18n="nav_hire">Hire Me</a>
+    <div class="drawer-foot">
+      <button id="theme-toggle" class="lang-btn" title="Light / Dark">☀️</button>
+      <button id="lang-toggle" class="lang-btn">اردو</button>
+      <a href="#contact" class="btn-small" data-i18n="nav_hire">Hire Me</a>
+    </div>
   </div>
+  <div class="nav-scrim" id="nav-scrim"></div>
 </nav>
 
 <header class="hero" id="top">
@@ -292,7 +295,7 @@
   </p>
 </footer>
 
-<script src="app.js?v=43"></script>
+<script src="app.js?v=44"></script>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
