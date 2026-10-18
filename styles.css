@@ -93,7 +93,35 @@ a:hover{color:var(--amber2)}
 .form-status.ok{color:#7ee2a8}
 .form-status.err{color:#ff8a8a}
 
-footer{text-align:center;padding:40px 5%;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+/* modern footer */
+footer{border-top:1px solid var(--line);background:var(--bg2)}
+.foot-cta-band{max-width:1100px;margin:0 auto;padding:56px 8% 40px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.foot-cta-band h3{font-size:clamp(1.4rem,3vw,1.8rem);margin-bottom:6px}
+.foot-cta-band p{color:var(--muted)}
+.foot-cta-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.foot-grid{max-width:1100px;margin:0 auto;padding:44px 8%;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px}
+.foot-brand .brand{font-size:1.8rem}
+.foot-brand p{color:var(--muted);font-size:.92rem;margin:12px 0 18px;max-width:290px}
+.foot-socials{display:flex;gap:10px;flex-wrap:wrap}
+.foot-socials a{border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:.85rem;color:var(--muted);transition:border-color .2s,color .2s}
+.foot-socials a:hover{border-color:var(--amber);color:var(--amber)}
+.foot-col h4{font-size:.82rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:14px}
+.foot-col>a{display:block;color:var(--muted);padding:5px 0;font-size:.93rem}
+.foot-col>a:hover{color:var(--amber)}
+.foot-share{margin-top:12px;font-size:.88rem;color:var(--muted)}
+.foot-share a{color:var(--muted)}
+.foot-share a:hover{color:var(--amber)}
+.foot-bottom{border-top:1px solid var(--line);padding:20px 8%;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;max-width:1100px;margin:0 auto;color:var(--muted);font-size:.83rem}
+@media(max-width:640px){
+  .foot-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .foot-cta-band{padding:44px 8% 32px}
+}
+
+.foot-share .link-btn{background:none;border:none;color:var(--amber);font-size:.88rem;cursor:pointer;font-family:inherit;padding:0}
+.foot-share .link-btn:hover{text-decoration:underline}
+
+/* legacy footer bits (kept for compatibility) */
+footer{text-align:left}
 .foot-links{margin-top:8px}
 
 /* github stats */
