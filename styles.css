@@ -220,3 +220,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offs
 #to-top{position:fixed;bottom:24px;right:24px;z-index:60;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--amber);font-size:1.4rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 #to-top.show{opacity:1;pointer-events:auto}
 #to-top:hover{transform:scale(1.1)}
+
+/* CEO vision section */
+.vision{text-align:center}
+.vision .kicker{margin-bottom:16px;display:block}
+.vision blockquote{font-size:clamp(1.15rem,3vw,1.65rem);font-weight:600;line-height:1.55;max-width:820px;margin:0 auto 16px;color:var(--text);font-style:italic}
+.vision blockquote::before{content:'\201C';color:var(--amber);font-size:2.4em;line-height:0;vertical-align:-.35em;margin-right:2px}
+.vision-sign{color:var(--amber);font-weight:700;margin-bottom:38px;letter-spacing:.5px}
+.vision-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;text-align:left}
+.v-card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--amber);border-radius:14px;padding:24px;transition:transform .25s,border-color .25s}
+.v-card:hover{transform:translateY(-4px);border-color:var(--amber)}
+.v-card h3{color:var(--amber);margin-bottom:8px;font-size:1.05rem}
+.v-card p{color:var(--muted);font-size:.93rem}
+html[dir="rtl"] .vision-cards{text-align:right}
