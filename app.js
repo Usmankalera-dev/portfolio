@@ -1,9 +1,15 @@
-// v52: frame-buster — GitHub Pages cannot send X-Frame-Options, so if a
-// stranger's page frames this site (clickjacking), break out to the real
-// address. (A sandboxed frame can still block the bust; risk is low for a
-// public portfolio, and this stops the common case.)
+// v52/v53: frame-buster — GitHub Pages cannot send X-Frame-Options, so if
+// a stranger's page frames this site (clickjacking), break out to the real
+// address. Chrome blocks the load-time attempt ("unsafe attempt to initiate
+// navigation"), so retry once the page has loaded — that attempt succeeds.
+// (A sandboxed frame can still block the bust; risk is low for a public
+// portfolio, and this stops the common case.)
 if (window.top !== window.self) {
-  try { window.top.location = window.self.location; } catch (e) {}
+  var bustOut = function () {
+    try { window.top.location = window.self.location; } catch (e) {}
+  };
+  bustOut();
+  window.addEventListener('load', function () { setTimeout(bustOut, 300); });
 }
 
 // Backend API base URL — set after deploying the backend (e.g. on Render).
