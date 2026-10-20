@@ -1,10 +1,12 @@
-// v52–v54: frame-buster — GitHub Pages cannot send X-Frame-Options, so if
+// v52–v55: frame-buster — GitHub Pages cannot send X-Frame-Options, so if
 // a stranger's page frames this site (clickjacking), break out to the real
 // address. Live testing showed Chrome blocks a cross-origin frame's
 // top-navigation while the frame is still settling ("unsafe attempt to
-// initiate navigation") — the same attempt succeeds a few seconds later,
-// so retry on a short schedule until one lands. (A sandboxed frame can
-// still block the bust; risk is low for a public portfolio.)
+// initiate navigation") and the block can last several seconds on slow
+// networks, so retry on a long schedule — and also bust on the first
+// interaction inside the frame (a clickjack needs the victim's click;
+// with that user activation the navigation is allowed). (A sandboxed
+// frame can still block the bust; risk is low for a public portfolio.)
 if (window.top !== window.self) {
   var bustOut = function () {
     try { window.top.location = window.self.location; } catch (e) {}
@@ -15,6 +17,11 @@ if (window.top !== window.self) {
   setTimeout(bustOut, 1500);
   setTimeout(bustOut, 3000);
   setTimeout(bustOut, 5000);
+  setTimeout(bustOut, 8000);
+  setTimeout(bustOut, 12000);
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+    window.addEventListener(ev, bustOut, true);
+  });
 }
 
 // Backend API base URL — set after deploying the backend (e.g. on Render).
