@@ -117,12 +117,14 @@ app.use((req, res, next) => {
 });
 
 // Simple in-memory rate limit: 5 submissions / 10 min per IP
-// v1.1.1: key on the real client IP — the first X-Forwarded-For hop —
-// not the whole header string (later hops can vary behind proxies)
+// v1.1.2: key on the LAST X-Forwarded-For hop — the one Render's edge
+// appends (the real peer). Earlier hops are client-supplied: keying on
+// them (v1.1.1) let an attacker rotate fake IPs and dodge the limit,
+// which the round-2 security tests proved live.
 function clientIp(req) {
   const xff = req.headers['x-forwarded-for'];
-  const first = xff ? String(xff).split(',')[0].trim() : '';
-  return first || req.socket.remoteAddress || 'unknown';
+  const parts = xff ? String(xff).split(',').map(s => s.trim()).filter(Boolean) : [];
+  return parts[parts.length - 1] || req.socket.remoteAddress || 'unknown';
 }
 const hits = new Map();
 function rateLimited(ip) {
@@ -134,7 +136,7 @@ function rateLimited(ip) {
 }
 
 app.get('/api/health', wrap(async (req, res) =>
-  res.json({ ok: true, version: '1.1.1', storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() })));
+  res.json({ ok: true, version: '1.1.2', storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() })));
 
 // Contact form submission
 app.post('/api/contact', wrap(async (req, res) => {
