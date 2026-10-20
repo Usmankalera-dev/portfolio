@@ -10,12 +10,13 @@ semver from `backend/package.json`.
   client-supplied first hop). It now keys on the **last** hop — the one
   Render's edge appends. Verified locally: 6th rapid submission → 429
   even with varying fake first hops.
-- **Clickjacking mitigation (v52–v53).** Round-2 tests framed the live
+- **Clickjacking mitigation (v52–v54).** Round-2 tests framed the live
   site in a foreign page (GitHub Pages sends no `X-Frame-Options`).
   `app.js` now opens with a frame-buster that breaks out to the real
-  address. Live retesting showed Chrome blocks the load-time attempt, so
-  v53 also retries after page load — that attempt succeeds. Residual
-  risk is low (public portfolio, no session).
+  address. Live retesting showed Chrome blocks a cross-origin frame's
+  top-navigation while the frame is still settling, so v54 retries on
+  a short schedule (immediately, after load, 1.5s, 3s, 5s) — a later
+  attempt succeeds. Residual risk is low (public portfolio, no session).
 - Round 2's other 18 checks passed: auth-bypass variants, NoSQLi,
   prototype pollution, XXE (edge-blocked), TRACE, old TLS, cookie audit,
   sensitive paths, CORS preflight attack, host-header injection, cache
