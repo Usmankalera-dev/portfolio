@@ -307,3 +307,36 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offs
 .v-card h3{color:var(--amber);margin-bottom:8px;font-size:1.05rem}
 .v-card p{color:var(--muted);font-size:.93rem}
 html[dir="rtl"] .vision-cards{text-align:right}
+
+/* ===== v49 premium animations ===== */
+/* retire the coarse whole-section reveal; per-element reveals below replace it */
+.js .section{opacity:1;transform:none;transition:none}
+.rv{opacity:0;transform:translateY(28px);filter:blur(3px);transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1),filter .7s ease;transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none;filter:none}
+/* card hover: lift + amber glow */
+.card{transition:transform .35s cubic-bezier(.22,.61,.36,1),border-color .35s ease,box-shadow .35s ease}
+.card:hover{transform:translateY(-6px);border-color:var(--amber);box-shadow:0 18px 42px rgba(0,0,0,.38),0 6px 26px rgba(245,166,35,.14)}
+[data-theme="light"] .card:hover{box-shadow:0 18px 42px rgba(90,70,20,.18),0 6px 26px rgba(199,127,14,.16)}
+.card.tilt{transform-style:preserve-3d;will-change:transform}
+.price-card{transition:transform .35s cubic-bezier(.22,.61,.36,1),border-color .35s ease,box-shadow .35s ease}
+.price-card:hover{transform:translateY(-6px);border-color:var(--amber);box-shadow:0 18px 42px rgba(0,0,0,.38),0 6px 26px rgba(245,166,35,.14)}
+[data-theme="light"] .price-card:hover{box-shadow:0 18px 42px rgba(90,70,20,.18),0 6px 26px rgba(199,127,14,.16)}
+/* skill bars animate via anim.js width changes */
+.bar i{transition:width 1.3s cubic-bezier(.22,.61,.36,1) .15s}
+/* button shine sweep */
+.btn{position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;top:0;left:-90%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none}
+.btn:hover::after{left:140%}
+/* keyword marquee under hero */
+.marquee{overflow:hidden;background:var(--bg2);border-block:1px solid var(--line);padding:13px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marquee-track{display:flex;width:max-content;animation:mq 30s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-track span{font-weight:700;letter-spacing:.14em;font-size:.84rem;color:var(--muted);padding:0 16px;white-space:nowrap}
+.marquee-track b{color:var(--amber)}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;filter:none;transition:none}
+  .marquee-track{animation:none}
+  .card:hover,.price-card:hover{transform:none}
+  .btn::after{display:none}
+}
