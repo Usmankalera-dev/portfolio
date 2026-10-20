@@ -117,6 +117,13 @@ app.use((req, res, next) => {
 });
 
 // Simple in-memory rate limit: 5 submissions / 10 min per IP
+// v1.1.1: key on the real client IP — the first X-Forwarded-For hop —
+// not the whole header string (later hops can vary behind proxies)
+function clientIp(req) {
+  const xff = req.headers['x-forwarded-for'];
+  const first = xff ? String(xff).split(',')[0].trim() : '';
+  return first || req.socket.remoteAddress || 'unknown';
+}
 const hits = new Map();
 function rateLimited(ip) {
   const now = Date.now();
@@ -127,11 +134,11 @@ function rateLimited(ip) {
 }
 
 app.get('/api/health', wrap(async (req, res) =>
-  res.json({ ok: true, version: '1.1.0', storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() })));
+  res.json({ ok: true, version: '1.1.1', storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() })));
 
 // Contact form submission
 app.post('/api/contact', wrap(async (req, res) => {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const ip = clientIp(req);
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages — please try again later.' });
 
   let { name, email, subject, message } = req.body || {};
@@ -161,7 +168,7 @@ app.post('/api/visits', wrap(async (req, res) => res.json({ count: await bumpVis
 
 // Reviews — submit (rate-limited)
 app.post('/api/reviews', wrap(async (req, res) => {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const ip = clientIp(req);
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many submissions — please try again later.' });
 
   let { name, rating, comment } = req.body || {};
@@ -225,12 +232,17 @@ async function delRev(id){await fetch('/api/reviews/'+id,{method:'DELETE',header
 </body></html>`);
 });
 
-// v51: central error handler — a storage hiccup returns 500 JSON instead of
-// hanging the request or taking the process down
+// v1.1.1: central error handler — respects the error's own status (a body
+// parser rejection is a client error: 413 too large / 400 malformed JSON),
+// never leaks internals, never hangs
 app.use((err, req, res, next) => {
-  console.error('API error:', err && err.message);
+  const status = err.status || err.statusCode || 500;
+  if (status >= 500) console.error('API error:', err && err.message);
   if (res.headersSent) return next(err);
-  res.status(500).json({ error: 'Server error — please try again.' });
+  const msg = status === 413 ? 'Request too large.'
+    : status >= 500 ? 'Server error — please try again.'
+    : 'Bad request.';
+  res.status(status).json({ error: msg });
 });
 
 initDb().then(() => {
