@@ -1,6 +1,18 @@
 // Backend API base URL — set after deploying the backend (e.g. on Render).
 // Leave empty to run frontend-only (contact form will show a notice).
 const BACKEND_URL = "https://portfolio-nu8s.onrender.com"; // e.g. "https://usman-portfolio-api.onrender.com"
+
+// v50 resilience: timed fetch (the free-tier backend may be asleep and need
+// time to wake; never let a page element hang forever on it)
+function fetchT(url, opts, ms){
+  opts = opts || {}; ms = ms || 20000;
+  var ctrl = new AbortController();
+  var t = setTimeout(function(){ ctrl.abort(); }, ms);
+  opts.signal = ctrl.signal;
+  return fetch(url, opts).finally(function(){ clearTimeout(t); });
+}
+// v50 warm-up: wake the backend the moment the page loads
+if (BACKEND_URL) { fetch(BACKEND_URL + '/api/visits').catch(function(){}); }
 const BOOKING_URL = ""; // Cal.com booking link — filled after account setup
 
 // ---------- Urdu / English toggle ----------
@@ -83,17 +95,20 @@ applyTheme(theme);
 async function trackVisit(){
   const el = document.getElementById('visitor-count');
   if (!BACKEND_URL) { el.textContent = '–'; return; }
+  const cachedCount = localStorage.getItem('uk-visits');   // v50: show last known count instantly
+  if (cachedCount) el.textContent = (+cachedCount).toLocaleString();
   try {
     let res;
     if (!sessionStorage.getItem('uk-visited')) {
-      res = await fetch(BACKEND_URL + '/api/visits', { method: 'POST' });
+      res = await fetchT(BACKEND_URL + '/api/visits', { method: 'POST' });
       sessionStorage.setItem('uk-visited', '1');
     } else {
-      res = await fetch(BACKEND_URL + '/api/visits');
+      res = await fetchT(BACKEND_URL + '/api/visits');
     }
     const d = await res.json();
     el.textContent = d.count.toLocaleString();
-  } catch(e){ el.textContent = '–'; }
+    localStorage.setItem('uk-visits', String(d.count));
+  } catch(e){ if (!cachedCount) el.textContent = '–'; }
 }
 trackVisit();
 document.querySelectorAll('[data-count]').forEach(el => {
@@ -116,25 +131,37 @@ paintStars(5);
 
 function starStr(n){ return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); }
 
+function renderReviews(reviews){
+  const list = document.getElementById('reviews-list');
+  if (!reviews.length) { list.innerHTML = '<p class="muted">No reviews yet — be the first!</p>'; }
+  else {
+    list.innerHTML = reviews.map(r =>
+      '<div class="card review-card"><div class="stars">' + starStr(r.rating) + '</div><p>' +
+      r.comment.replace(/</g,'&lt;') + '</p><div class="r-name">' + r.name.replace(/</g,'&lt;') +
+      '</div><div class="r-date">' + new Date(r.createdAt).toLocaleDateString() + '</div></div>'
+    ).join('');
+  }
+  const avg = reviews.reduce((a,r)=>a+r.rating,0) / (reviews.length || 1);
+  document.getElementById('avg-rating').textContent = reviews.length ? avg.toFixed(1) : '–';
+  document.getElementById('avg-stars').textContent = reviews.length ? starStr(Math.round(avg)) : '';
+  document.getElementById('rating-count').textContent = reviews.length ? 'based on ' + reviews.length + ' review' + (reviews.length>1?'s':'') : '';
+}
+
 async function loadReviews(){
   const list = document.getElementById('reviews-list');
   if (!BACKEND_URL) { list.innerHTML = '<p class="muted">Reviews load once the backend is connected.</p>'; return; }
+  // v50: render the cached copy instantly; fresh data replaces it when it lands
+  let hadCache = false;
   try {
-    const res = await fetch(BACKEND_URL + '/api/reviews');
+    const cached = JSON.parse(localStorage.getItem('uk-reviews') || 'null');
+    if (cached && cached.length) { renderReviews(cached); hadCache = true; }
+  } catch(e){}
+  try {
+    const res = await fetchT(BACKEND_URL + '/api/reviews', {}, 25000);
     const reviews = await res.json();
-    if (!reviews.length) { list.innerHTML = '<p class="muted">No reviews yet — be the first!</p>'; }
-    else {
-      list.innerHTML = reviews.map(r =>
-        '<div class="card review-card"><div class="stars">' + starStr(r.rating) + '</div><p>' +
-        r.comment.replace(/</g,'&lt;') + '</p><div class="r-name">' + r.name.replace(/</g,'&lt;') +
-        '</div><div class="r-date">' + new Date(r.createdAt).toLocaleDateString() + '</div></div>'
-      ).join('');
-    }
-    const avg = reviews.reduce((a,r)=>a+r.rating,0) / (reviews.length || 1);
-    document.getElementById('avg-rating').textContent = reviews.length ? avg.toFixed(1) : '–';
-    document.getElementById('avg-stars').textContent = reviews.length ? starStr(Math.round(avg)) : '';
-    document.getElementById('rating-count').textContent = reviews.length ? 'based on ' + reviews.length + ' review' + (reviews.length>1?'s':'') : '';
-  } catch(e){ list.innerHTML = '<p class="muted">Could not load reviews.</p>'; }
+    renderReviews(reviews);
+    try { localStorage.setItem('uk-reviews', JSON.stringify(reviews)); } catch(e){}
+  } catch(e){ if (!hadCache) list.innerHTML = '<p class="muted">Could not load reviews.</p>'; }
 }
 loadReviews();
 
@@ -150,7 +177,7 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
   }
   status.className = 'form-status'; status.textContent = 'Submitting...';
   try {
-    const res = await fetch(BACKEND_URL + '/api/reviews', {
+    const res = await fetchT(BACKEND_URL + '/api/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: String(fd.get('name') || '').trim(), rating: chosenRating, comment: String(fd.get('comment') || '').trim() })
@@ -159,7 +186,7 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
     if (res.ok) {
       status.className = 'form-status ok'; status.textContent = 'Thanks for your review! ✓';
       form.reset(); chosenRating = 5; paintStars(5); loadReviews();    } else { status.className = 'form-status err'; status.textContent = out.error || 'Something went wrong.'; }
-  } catch(e){ status.className = 'form-status err'; status.textContent = 'Could not reach the server.'; }
+  } catch(e){ status.className = 'form-status err'; status.textContent = 'Server is waking up — please try again in a moment.'; }
 });
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -180,7 +207,7 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   status.className = 'form-status';
   status.textContent = 'Sending...';
   try {
-    const res = await fetch(BACKEND_URL + '/api/contact', {
+    const res = await fetchT(BACKEND_URL + '/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -195,8 +222,10 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
       status.textContent = out.error || 'Something went wrong. Please email me directly.';
     }
   } catch (err) {
+    // v50: never lose a lead — offer WhatsApp with the message prefilled
+    const waText = encodeURIComponent('Assalam-o-Alaikum! I am ' + (data.name || 'a visitor') + '.\nSubject: ' + (data.subject || '-') + '\n' + data.message + (data.email ? '\n(My email: ' + data.email + ')' : ''));
     status.className = 'form-status err';
-    status.textContent = 'Could not reach the server. Please email me directly.';
+    status.innerHTML = 'Server is waking up. <a href="https://wa.me/923187579301?text=' + waText + '" target="_blank" rel="noopener"><b>Send this message via WhatsApp instead →</b></a>';
   }
 });
 
