@@ -1,3 +1,11 @@
+// v52: frame-buster — GitHub Pages cannot send X-Frame-Options, so if a
+// stranger's page frames this site (clickjacking), break out to the real
+// address. (A sandboxed frame can still block the bust; risk is low for a
+// public portfolio, and this stops the common case.)
+if (window.top !== window.self) {
+  try { window.top.location = window.self.location; } catch (e) {}
+}
+
 // Backend API base URL — set after deploying the backend (e.g. on Render).
 // Leave empty to run frontend-only (contact form will show a notice).
 const BACKEND_URL = "https://portfolio-nu8s.onrender.com"; // e.g. "https://usman-portfolio-api.onrender.com"

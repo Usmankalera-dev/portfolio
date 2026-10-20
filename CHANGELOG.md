@@ -4,6 +4,21 @@ All notable changes to the portfolio site. Frontend versions are the
 cache-bust numbers used in `index.html` / `sw.js`; backend versions are
 semver from `backend/package.json`.
 
+## Backend 1.1.2 + Frontend v52 — 2026-10-20 (round-2 security fixes)
+- **Rate-limit bypass fixed.** Round-2 tests proved the limiter could be
+  dodged by rotating fake `X-Forwarded-For` values (it keyed on the
+  client-supplied first hop). It now keys on the **last** hop — the one
+  Render's edge appends. Verified locally: 6th rapid submission → 429
+  even with varying fake first hops.
+- **Clickjacking mitigation (v52).** Round-2 tests framed the live site
+  in a foreign page (GitHub Pages sends no `X-Frame-Options`). `app.js`
+  now opens with a frame-buster that breaks out to the real address;
+  verified locally. Residual risk is low (public portfolio, no session).
+- Round 2's other 18 checks passed: auth-bypass variants, NoSQLi,
+  prototype pollution, XXE (edge-blocked), TRACE, old TLS, cookie audit,
+  sensitive paths, CORS preflight attack, host-header injection, cache
+  poisoning probe, type confusion.
+
 ## Backend 1.1.1 — 2026-10-20 (security fixes)
 - Error handler now respects each error's own status: oversized bodies get
   **413** and malformed JSON gets **400** (both previously surfaced as 500).
