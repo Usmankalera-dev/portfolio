@@ -4,6 +4,19 @@ All notable changes to the portfolio site. Frontend versions are the
 cache-bust numbers used in `index.html` / `sw.js`; backend versions are
 semver from `backend/package.json`.
 
+## Backend 1.1.1 — 2026-10-20 (security fixes)
+- Error handler now respects each error's own status: oversized bodies get
+  **413** and malformed JSON gets **400** (both previously surfaced as 500).
+  Found by the 20-point security test run the same day.
+- Rate limiter keys on the real client IP (first `X-Forwarded-For` hop)
+  instead of the whole header string, so proxy-hop variance can no longer
+  split one visitor into several rate-limit buckets. Verified locally:
+  6th rapid submission returns 429.
+- The same run's other findings needed no code change: backend source is
+  visible only because this repo is public (no secrets in code — verified
+  by scan), and all 17 remaining checks passed (HTTPS/HSTS, CORS, admin
+  auth, SQLi/XSS probes stored harmlessly, traversal and `.git` blocked).
+
 ## v51 — 2026-10-20 (SE hardening)
 - Added the missing favicon (SVG + PNG + apple-touch-icon).
 - Backend 1.1.0: async error handling on all routes + central error handler
