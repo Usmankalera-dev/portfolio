@@ -2,7 +2,7 @@
    Static shell cache: repeat visits load instantly and the page shell
    survives flaky connections. HTML is network-first (always fresh when
    online); API/backend traffic is never touched. */
-var CACHE = 'uk-portfolio-v50';
+var CACHE = 'uk-portfolio-v51';
 var CORE = [
   'index.html',
   'styles.css?v=49',
