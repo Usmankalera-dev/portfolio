@@ -92,11 +92,26 @@ async function bumpVisits() {
 
 app.use(express.json({ limit: '32kb' }));
 
-// CORS — allow the GitHub Pages frontend
+// v51: wrap async handlers so rejections reach the error handler (Express 4
+// does not catch async errors by itself — an unhandled one hangs the request)
+const wrap = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
+// CORS — allow only the portfolio origin (plus local dev). Non-browser
+// clients (health checks, the keep-warm ping) send no Origin and are
+// unaffected; browsers from any other origin get no CORS grant.
+const ALLOWED_ORIGINS = ['https://usmankalera-dev.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000', 'http://127.0.0.1:8901'];
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Vary', 'Origin');
+  }
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  // v51: basic security headers
+  res.header('X-Content-Type-Options', 'nosniff');
+  res.header('Referrer-Policy', 'no-referrer');
+  res.header('X-Frame-Options', 'DENY');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
@@ -111,11 +126,11 @@ function rateLimited(ip) {
   return arr.length > 5;
 }
 
-app.get('/api/health', async (req, res) =>
-  res.json({ ok: true, storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() }));
+app.get('/api/health', wrap(async (req, res) =>
+  res.json({ ok: true, version: '1.1.0', storage: useDb ? 'postgres' : 'json', time: new Date().toISOString() })));
 
 // Contact form submission
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', wrap(async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages — please try again later.' });
 
@@ -135,17 +150,17 @@ app.post('/api/contact', async (req, res) => {
     ip: String(ip).slice(0, 45), createdAt: new Date().toISOString(), read: false
   });
   res.json({ ok: true });
-});
+}));
 
 // Reviews — public list
-app.get('/api/reviews', async (req, res) => res.json(await loadReviews()));
+app.get('/api/reviews', wrap(async (req, res) => res.json(await loadReviews())));
 
 // Visitor counter
-app.get('/api/visits', async (req, res) => res.json({ count: await getVisits() }));
-app.post('/api/visits', async (req, res) => res.json({ count: await bumpVisits() }));
+app.get('/api/visits', wrap(async (req, res) => res.json({ count: await getVisits() })));
+app.post('/api/visits', wrap(async (req, res) => res.json({ count: await bumpVisits() })));
 
 // Reviews — submit (rate-limited)
-app.post('/api/reviews', async (req, res) => {
+app.post('/api/reviews', wrap(async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   if (rateLimited(ip)) return res.status(429).json({ error: 'Too many submissions — please try again later.' });
 
@@ -160,31 +175,31 @@ app.post('/api/reviews', async (req, res) => {
 
   await saveReview({ id: crypto.randomUUID(), name, rating, comment, createdAt: new Date().toISOString() });
   res.json({ ok: true });
-});
+}));
 
 // Reviews — admin delete
-app.delete('/api/reviews/:id', async (req, res) => {
+app.delete('/api/reviews/:id', wrap(async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
   await deleteReview(req.params.id);
   res.json({ ok: true });
-});
+}));
 
 // Admin: list messages (Bearer token)
-app.get('/api/messages', async (req, res) => {
+app.get('/api/messages', wrap(async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
   res.json(await loadMessages());
-});
+}));
 
 // Admin: mark read
-app.post('/api/messages/:id/read', async (req, res) => {
+app.post('/api/messages/:id/read', wrap(async (req, res) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (token !== ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
   const ok = await markRead(req.params.id);
   if (!ok) return res.status(404).json({ error: 'Not found' });
   res.json({ ok: true });
-});
+}));
 
 // Tiny admin dashboard (open /admin in browser, paste token)
 app.get('/admin', (req, res) => {
@@ -208,6 +223,14 @@ document.getElementById('revs').innerHTML=revs.map(v=>'<div class="msg"><b>'+v.n
 window._t=t;}
 async function delRev(id){await fetch('/api/reviews/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+window._t}});load();}</script>
 </body></html>`);
+});
+
+// v51: central error handler — a storage hiccup returns 500 JSON instead of
+// hanging the request or taking the process down
+app.use((err, req, res, next) => {
+  console.error('API error:', err && err.message);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: 'Server error — please try again.' });
 });
 
 initDb().then(() => {
